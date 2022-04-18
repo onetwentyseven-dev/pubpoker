@@ -43,3 +43,38 @@ resource "aws_apigatewayv2_api_mapping" "api" {
   domain_name = aws_apigatewayv2_domain_name.ppc_api.id
   stage       = aws_apigatewayv2_stage.ppc_api.id
 }
+
+resource "aws_apigatewayv2_route" "get_players_search" {
+  api_id    = aws_apigatewayv2_api.ppc_api.id
+  route_key = "GET /players/search"
+
+  target = "integrations/${aws_apigatewayv2_integration.players_handler.id}"
+}
+
+resource "aws_apigatewayv2_route" "get_seasons" {
+  api_id    = aws_apigatewayv2_api.ppc_api.id
+  route_key = "GET /seasons"
+
+  target = "integrations/${aws_apigatewayv2_integration.seasons_handler.id}"
+}
+
+resource "aws_apigatewayv2_route" "get_current_season" {
+  api_id    = aws_apigatewayv2_api.ppc_api.id
+  route_key = "GET /seasons/current"
+
+  target = "integrations/${aws_apigatewayv2_integration.seasons_handler.id}"
+}
+
+resource "aws_apigatewayv2_route" "get_leaderboard" {
+  api_id    = aws_apigatewayv2_api.ppc_api.id
+  route_key = "GET /seasons/{seasonID}/leaderboard"
+
+  target = "integrations/${aws_apigatewayv2_integration.leaderboard_handler.id}"
+}
+
+resource "aws_apigatewayv2_route" "get_leaderboard" {
+  api_id    = aws_apigatewayv2_api.ppc_api.id
+  route_key = "GET /seasons/{seasonID}/recent-winners"
+
+  target = "integrations/${aws_apigatewayv2_integration.leaderboard_handler.id}"
+}
