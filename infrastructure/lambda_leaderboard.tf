@@ -34,3 +34,11 @@ resource "aws_lambda_permission" "allow_apig_leaderboard_handler" {
   source_arn    = "${aws_apigatewayv2_api.ppc_api.execution_arn}/*/*/seasons/{seasonID}/leaderboard"
   action        = "lambda:InvokeFunction"
 }
+
+resource "aws_lambda_permission" "allow_apig_recent_winners_handler" {
+  statement_id  = "AllowAPIGatewaySeasonRecentWinnersHandlerInvocation"
+  function_name = aws_lambda_function.leaderboard_handler.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.ppc_api.execution_arn}/*/*/recent-winners"
+  action        = "lambda:InvokeFunction"
+}

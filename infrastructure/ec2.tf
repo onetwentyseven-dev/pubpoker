@@ -16,6 +16,7 @@ data "aws_key_pair" "default" {
 
 
 resource "aws_instance" "ssh_tunnel" {
+  count         = var.enable_bastion ? 1 : 0
   ami           = local.default_ami
   instance_type = "t2.micro"
 

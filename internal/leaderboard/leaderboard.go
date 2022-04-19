@@ -63,6 +63,8 @@ func (c *Client) SeasonLeaderboard(ctx context.Context, page, pageSize uint, sea
 
 }
 
+const pubLeaderboardDefaultAvaterURI = "https://pokerleaderboards.com/assets/images/avatars/default_avatar.png"
+
 func (c *Client) SeasonRecentWinners(ctx context.Context) ([]*RecentWinnerRecord, error) {
 
 	uri := c.apiURL()
@@ -99,6 +101,18 @@ func (c *Client) SeasonRecentWinners(ctx context.Context) ([]*RecentWinnerRecord
 	err = json.Unmarshal(data, respData)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to decode response data to structure")
+	}
+
+	records := respData.Records
+	for _, record := range records {
+		pSettings := record.Player.PlayerSetting
+		if pSettings.AvatarURL == "" {
+			u := c.apiURL()
+			u.Path = fmt.Sprintf("/p/player/%s/avatar", record.Player.ID)
+			pSettings.AvatarURL = u.String()
+		} else if pSettings.AvatarURL == "avatars/default_avatar.png" {
+			pSettings.AvatarURL = pubLeaderboardDefaultAvaterURI
+		}
 	}
 
 	return respData.Records, nil
