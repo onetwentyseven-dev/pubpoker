@@ -17,8 +17,8 @@
                     v-model="searchValue"
                     class="align-self-center"
                     debounce="500"
+                    placeholder="Type Player Name to Search Specific Player"
                   />
-                  <div class="mt-2">Value: "{{ searchValue }}"</div>
                 </b-col>
               </b-row>
             </b-card-body>
@@ -35,6 +35,25 @@
         </b-col>
         <b-col md="6">
           <h2>Recent Tournament Winners</h2>
+          <hr />
+          <b-list-group>
+            <b-list-group-item v-for="(winner, index) in winners" :key="index">
+              <b-media>
+                <template #aside>
+                  <b-img
+                    :style="
+                      'background-image: url(' +
+                      winner.Player.PlayerSetting.avatar_url +
+                      ');'
+                    "
+                    class="player-avater rounded"
+                  />
+                </template>
+                <h5>{{ winner.Player.name }}</h5>
+                <small>{{ winner.Tournament.Venue.name }}</small>
+              </b-media>
+            </b-list-group-item>
+          </b-list-group>
         </b-col>
       </b-row>
     </b-container>
@@ -56,6 +75,7 @@ export default {
     fmtPoints(p) {
       return new Intl.NumberFormat().format(p)
     },
+
     async handleSearchValue() {
       await this.fetchLeaderboard()
     },
@@ -79,7 +99,7 @@ export default {
         })
     },
     fetchRecentWinners() {
-      let endpoint = `${apiURL}/seasons/${this.season.id}/recent-winners`
+      let endpoint = `${apiURL}/recent-winners`
 
       return this.$axios(endpoint)
         .then((res) => {
@@ -99,6 +119,7 @@ export default {
       winners: [],
       season: {},
       searchValue: '',
+      apiURL: apiURL,
     }
   },
   watch: {
@@ -108,7 +129,7 @@ export default {
     this.season = await this.$axios(`${apiURL}/seasons/current`).then(
       (res) => res.data
     )
-    await Promise.all([this.fetchLeaderboard()])
+    await Promise.all([this.fetchLeaderboard(), this.fetchRecentWinners()])
   },
 }
 </script>
@@ -139,5 +160,13 @@ export default {
 .header {
   color: white;
   text-shadow: #000 1px 1px 10px;
+}
+
+.player-avater {
+  width: 80px;
+  height: 80px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 </style>
