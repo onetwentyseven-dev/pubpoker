@@ -7,4 +7,4 @@ deploy:
 	rm -r ./dist
 
 tfapply:
-	terraform -chdir=infrastructure apply
+	terraform -chdir=terraform apply
