@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	ssmconfig "github.com/ianlopshire/go-ssm-config"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
+	ssmconfig "github.com/onetwentyseven-dev/go-ssm-config"
 )
 
 var envConfig struct {
