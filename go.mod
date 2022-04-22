@@ -14,7 +14,7 @@ require (
 	github.com/go-http-utils/headers v0.0.0-20181008091004-fed159eddc2a
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/joho/godotenv v1.4.0
-	github.com/onetwentyseven-dev/go-ssm-config v1.1.0
+	github.com/onetwentyseven-dev/go-ssm-config v1.1.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/ulule/deepcopier v0.0.0-20200430083143-45decc6639b6
 	github.com/volatiletech/null/v8 v8.1.2

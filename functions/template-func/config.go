@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -28,7 +29,7 @@ func loadConfig(awsConfig aws.Config) {
 		panic(fmt.Sprintf("envconfig: %s", err))
 	}
 
-	err = ssmconfig.Process(awsConfig, envConfig.SSMPrefix, &ssmConfig)
+	err = ssmconfig.Process(context.TODO(), awsConfig, envConfig.SSMPrefix, &ssmConfig)
 	if err != nil {
 		panic(fmt.Sprintf("ssmconfig: %s", err))
 	}
