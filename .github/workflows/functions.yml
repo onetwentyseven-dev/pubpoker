@@ -24,14 +24,15 @@ jobs:
       - name: Zip Artifact
         run: |
           zip -j ./.build/${{matrix.function}}_handler.zip ./.build/${{matrix.function}}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
       - name: Upload to S3
         run: |
           aws s3 cp ./build/${{matrix.function}}_handler.zip s3://ppc-lambda-functions/${{matrix.function}}_handler.zip
       - name: Update Lambda Function
         run: |
           aws lambda update-function-code --function-name ${{matrix.function}}_handler --s3-bucket ppc-lambda-functions --s3-key ${{matrix.function}}_handler.zip
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@master
-      #   with:
-      #     aws-region: us-east-1
-      #     role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
+      
