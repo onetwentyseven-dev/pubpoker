@@ -1,3 +1,7 @@
+resource "aws_s3_bucket" "ppc_main_site" {
+  bucket = "ppc-main-site"
+}
+
 resource "aws_s3_bucket" "ppc_lambda_functions" {
   bucket = "ppc-lambda-functions"
 }
