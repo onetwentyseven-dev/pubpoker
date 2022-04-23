@@ -1,11 +1,12 @@
 name: Build Go
 on: 
   push:
-    - "*"
-  paths:
-    - .github/**
-    - functions/**
-    - internal/**
+    branches:
+      - "*"
+    paths:
+      - .github/**
+      - functions/**
+      - internal/**
   
 
 permissions:
