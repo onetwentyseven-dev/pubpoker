@@ -24,3 +24,4 @@ jobs:
         with:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
+      - run: aws sts get-caller-identity

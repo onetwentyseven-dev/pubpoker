@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "github_actions_oidc_assume_role" {
     effect  = "Allow"
     condition {
       test     = "StringLike"
-      values   = ["repo:pubpoker:*"]
+      values   = ["repo:onetwentyseven-dev/pubpoker:*"]
       variable = "token.actions.githubusercontent.com:sub"
     }
 
