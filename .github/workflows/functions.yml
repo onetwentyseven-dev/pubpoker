@@ -6,10 +6,10 @@ permissions:
 jobs:
   CheckCallerIdentity:
     runs-on: ubuntu-latest
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     function: ["leaderboard", "players", "seasons"]
+    strategy:
+      fail-fast: false
+      matrix:
+        function: ["leaderboard", "players", "seasons"]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
@@ -17,11 +17,13 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: '1.18.1'
-      # - name: Build Function
-      #   run: echo ${{matrix.function}}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          aws-region: us-east-1
-          role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
-      - run: aws sts get-caller-identity
+      - run: mkdir .build
+      - name: Build Function
+        run: |
+          GOOS=linux go build -o ./.build/${{matrix.function}}/${{matrix.function}} ./functions/${{matrix.function}}/*.go
+      - run: ls -l .build
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     aws-region: us-east-1
+      #     role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
