@@ -20,7 +20,7 @@ jobs:
       - run: mkdir .build
       - name: Build Function
         run: |
-          GOOS=linux go build -mod=vendor -o ./.build/${{matrix.function}} ./functions/${{matrix.function}}/*.go
+          GOOS=linux go build -o ./.build/${{matrix.function}} ./functions/${{matrix.function}}/*.go
       - run: ls -l .build
       # - name: Configure AWS Credentials
       #   uses: aws-actions/configure-aws-credentials@master
