@@ -1,0 +1,21 @@
+name: Build Go
+on:
+  push:
+    branches:
+      - !main
+
+jobs:
+  BuildMatrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{steps.buildMatrix.outputs.matrix}}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v1
+      - name: Build Matrix
+        run: |
+          arr=$(find . -d 1 -type d -not -name template-func)
+          echo "$arr" | \
+          jq --slurp --raw-input 'split("\n")[:-1]' | \
+          jq "{\"filepath\": .[] }" | \
+          jq -sc "{\"include\": .}" > tmp

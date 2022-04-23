@@ -8,3 +8,5 @@ deploy:
 
 tfapply:
 	terraform -chdir=terraform apply
+
+	
