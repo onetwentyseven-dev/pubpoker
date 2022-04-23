@@ -6,8 +6,8 @@
 resource "aws_iam_role" "github_actions_oidc" {
   name                 = "GithubActionOIDC"
   description          = "Role Used by Github OIDC Provider"
-  max_session_duration = "600"
-  assume_role_policy   = data.aws_iam_policy_document.github_actions_oidc.json
+  max_session_duration = "3600"
+  assume_role_policy   = data.aws_iam_policy_document.github_actions_oidc_assume_role.json
 }
 
 data "aws_iam_policy_document" "github_actions_oidc_assume_role" {
@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "github_actions_oidc_assume_role" {
   }
 }
 
-resource "aws_iam_role_policy" "lambda_ssm_read_pub_poker" {
+resource "aws_iam_role_policy" "github_action_oidc_access" {
   name   = "github_action_oidc_access"
   role   = aws_iam_role.github_actions_oidc.id
   policy = data.aws_iam_policy_document.github_actions_odic.json
@@ -42,10 +42,10 @@ data "aws_iam_policy_document" "github_actions_odic" {
       "s3:List*"
     ]
     resources = [
-      module.ppc_main_site.arn,
-      "${module.ppc_main_site.arn}/*",
-      "${module.ppc_lambda_functions.arn}/*",
-      module.ppc_lambda_functions.arn,
+      aws_s3_bucket.ppc_main_site.arn,
+      "${aws_s3_bucket.ppc_main_site.arn}/*",
+      "${aws_s3_bucket.ppc_lambda_functions.arn}/*",
+      aws_s3_bucket.ppc_lambda_functions.arn,
     ]
   }
   #   statement {
