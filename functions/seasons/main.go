@@ -47,7 +47,7 @@ func (h *handler) handleGetCurrentSeason(ctx context.Context, input events.APIGa
 		}, map[string]string{})
 	}
 
-	return apigw.RespondJSON(http.StatusBadRequest, season, nil)
+	return apigw.RespondJSON(http.StatusOK, season, nil)
 
 }
 

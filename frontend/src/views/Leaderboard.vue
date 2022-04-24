@@ -11,7 +11,12 @@
         </div>
       </div>
       <div v-else-if="!loading">
-        <b-row>
+        <b-row v-if="error != ''">
+          <b-col>
+            <Error :text="error" />
+          </b-col>
+        </b-row>
+        <b-row v-else>
           <b-col md="6">
             <h2>Leaderboard {{ leaderboard.length }}</h2>
             <hr />
@@ -74,22 +79,21 @@
   </Layout>
 </template>
 <script>
-import Layout from "../layout/index.vue";
+import Layout from "../layout/index";
+import Error from "../components/Error";
 
 const apiURL = "https://api.ppc.onetwentyseven.dev";
 
 export default {
   components: {
     Layout,
+    Error,
   },
   methods: {
     fmtPoints(p) {
       return new Intl.NumberFormat().format(p);
     },
 
-    async handleSearchValue() {
-      await this.fetchLeaderboard();
-    },
     fetchLeaderboard() {
       let endpoint = `${apiURL}/seasons/${this.season.id}/leaderboard`;
       const params = [];
@@ -107,7 +111,7 @@ export default {
           this.leaderboard.items = res.data;
         })
         .catch((err) => {
-          console.log(err.response);
+          this.error = "Failed to load leaderboard. Please try again later.";
         });
     },
     fetchRecentWinners() {
@@ -119,7 +123,7 @@ export default {
           this.winners = res.data;
         })
         .catch((err) => {
-          console.log(err.response);
+          this.error = "Failed to load Recent Winners. Please try again later";
         });
     },
   },
@@ -134,19 +138,24 @@ export default {
       searchValue: "",
       apiURL: apiURL,
       loading: true,
+      error: "",
     };
   },
   watch: {
-    searchValue: "handleSearchValue",
+    searchValue: "fetchLeaderboard",
   },
   async created() {
-    this.season = await this.axios
-      .get(`${apiURL}/seasons/current`)
-      .then((res) => res.data);
-    await Promise.all([
-      this.fetchLeaderboard(),
-      this.fetchRecentWinners(),
-    ]).then(() => (this.loading = false));
+    try {
+      await this.axios.get(`${apiURL}/seasons/current`).then((res) => {
+        this.season = res.data;
+      });
+      await Promise.all([this.fetchLeaderboard(), this.fetchRecentWinners()]);
+    } catch (err) {
+      console.log(err.response.data.error);
+      this.error =
+        "One or more requets needed to initialize the leaderboards failed to return. Please try again later";
+    }
+    this.loading = false;
   },
 };
 </script>
