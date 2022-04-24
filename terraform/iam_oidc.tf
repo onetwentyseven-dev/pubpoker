@@ -48,13 +48,18 @@ data "aws_iam_policy_document" "github_actions_odic" {
       aws_s3_bucket.ppc_lambda_functions.arn,
     ]
   }
-  #   statement {
-  #     effect = "Allow"
-  #     actions = [
-  #       "cloudfront:CreateInvalidation"
-  #     ]
-  #     resources = [try(aws_cloudfront_distribution.s3_distribution_portkey[0].arn, false)]
-  #   }
+  statement {
+    effect = "Allow"
+    actions = [
+      "cloudfront:CreateInvalidation",
+    ]
+    resources = [aws_cloudfront_distribution.ppc_main.arn]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = ["cloudfront:ListDistributions"]
+    resources = ["*"]
+  }
   statement {
     effect = "Allow"
     actions = [

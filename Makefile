@@ -1,4 +1,4 @@
 tfapply:
-	terraform -chdir=terraform apply
+	terraform -chdir=terraform apply -refresh=false
 
 	
