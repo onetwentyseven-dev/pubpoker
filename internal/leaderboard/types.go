@@ -97,7 +97,17 @@ type PlayerSetting struct {
 }
 
 type Venue struct {
-	Name string `json:"name"`
+	ID          string      `json:"id"`
+	Name        string      `json:"name"`
+	LeagueID    string      `json:"league_id"`
+	VenueNumber string      `json:"venue_number"`
+	Description interface{} `json:"description"`
+	IsActive    bool        `json:"is_active"`
+	AmountOwed  string      `json:"amount_owed"`
+	URL         string      `json:"url"`
+	RegionID    interface{} `json:"region_id"`
+	CreatedAt   time.Time   `json:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at"`
 }
 type Tournament struct {
 	SeasonID string `json:"season_id"`

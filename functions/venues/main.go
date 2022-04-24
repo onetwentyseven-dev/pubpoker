@@ -19,36 +19,15 @@ type handler struct {
 	leaderboard *leaderboard.Client
 }
 
-func (h *handler) handleGetSeasons(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
-
-	seasons, err := h.leaderboard.Seasons(ctx)
+func (h *handler) handleGetVenues(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	venues, err := h.leaderboard.Venues(ctx)
 	if err != nil {
 		return apigw.RespondJSON(http.StatusBadRequest, map[string]string{
-			"error": "failed to fetch seasons",
-		}, map[string]string{})
-	}
-	return apigw.RespondJSON(http.StatusOK, seasons, nil)
-
-}
-
-func (h *handler) handleGetCurrentSeason(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
-
-	seasons, err := h.leaderboard.Seasons(ctx)
-	if err != nil {
-		return apigw.RespondJSON(http.StatusBadRequest, map[string]string{
-			"error": "failed to fetch seasons",
+			"error": "failed to fetch venues",
 		}, map[string]string{})
 	}
 
-	season, err := h.leaderboard.CurrentSeason(ctx, seasons)
-	if err != nil {
-		return apigw.RespondJSON(http.StatusBadRequest, map[string]string{
-			"error": "failed to fetch current season",
-		}, map[string]string{})
-	}
-
-	return apigw.RespondJSON(http.StatusOK, season, nil)
-
+	return apigw.RespondJSON(http.StatusOK, venues, nil)
 }
 
 func main() {
@@ -80,14 +59,10 @@ func main() {
 	var routes = map[apigw.Route]apigw.Handler{
 		{
 			Method: http.MethodGet,
-			Path:   "/seasons",
-		}: h.handleGetSeasons,
-		{
-			Method: http.MethodGet,
-			Path:   "/seasons/current",
-		}: h.handleGetCurrentSeason,
+			Path:   "/venues",
+		}: h.handleGetVenues,
 	}
 
-	lambda.Start(apigw.UseMiddleware(apigw.HandleRoutes(routes), apigw.Cors(apigw.DefaultCorsOpt)))
+	lambda.Start(apigw.HandleRoutes(routes))
 
 }
