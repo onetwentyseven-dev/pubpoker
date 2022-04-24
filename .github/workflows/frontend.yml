@@ -38,5 +38,5 @@ jobs:
       #   run: aws s3 sync ./frontend/dist s3://ppc-main-site
       - name: Get Cloudfront Distribution
         run: |
-          distribution=${aws cloudfront list-distributions | jq '.Distributions.Items' | jq '.[] | select(.Aliases.Items[1] = "ppc.onetwentyseven.dev")'}
+          distribution=$(aws cloudfront list-distributions | jq '.Distributions.Items' | jq '.[] | select(.Aliases.Items[1] = "ppc.onetwentyseven.dev")')
           echo "$distribution"
