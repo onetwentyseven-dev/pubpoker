@@ -1,61 +1,75 @@
 <template>
   <Layout>
     <b-container class="marginTop">
-      <b-row>
-        <b-col md="6">
-          <h2>Leaderboard {{ leaderboard.length }}</h2>
-          <hr />
-          <b-card no-body>
-            <b-card-body class="searchField" style="background-color: #eee">
-              <b-row>
-                <b-col lg="3" class="d-flex">
-                  <div class="align-self-center">Name</div>
-                </b-col>
-                <b-col>
-                  <b-form-input
-                    id="name-search"
-                    v-model="searchValue"
-                    class="align-self-center"
-                    debounce="500"
-                    placeholder="Type Player Name to Search Specific Player"
-                  />
-                </b-col>
-              </b-row>
-            </b-card-body>
-            <b-table
-              :items="leaderboard.items"
-              :fields="leaderboard.fields"
-              class="m-0"
-            >
-              <template #cell(points_awarded)="data">
-                {{ fmtPoints(data.value) }}
-              </template>
-            </b-table>
-          </b-card>
-        </b-col>
-        <b-col md="6">
-          <h2>Recent Tournament Winners</h2>
-          <hr />
-          <b-list-group>
-            <b-list-group-item v-for="(winner, index) in winners" :key="index">
-              <b-media>
-                <template #aside>
-                  <b-img
-                    :style="
-                      'background-image: url(' +
-                      winner.Player.PlayerSetting.avatar_url +
-                      ');'
-                    "
-                    class="player-avater rounded"
-                  />
+      <div v-if="loading">
+        <div class="d-flex justify-content-center mb-3">
+          <b-spinner
+            style="width: 3rem; height: 3rem"
+            label="Loading Leaderboards..."
+          />
+          <h1 class="ms-3">Loading Leaderboards...</h1>
+        </div>
+      </div>
+      <div v-else-if="!loading">
+        <b-row>
+          <b-col md="6">
+            <h2>Leaderboard {{ leaderboard.length }}</h2>
+            <hr />
+            <b-card no-body>
+              <b-card-body class="searchField" style="background-color: #eee">
+                <b-row>
+                  <b-col lg="3" class="d-flex">
+                    <div class="align-self-center">Name</div>
+                  </b-col>
+                  <b-col>
+                    <b-form-input
+                      id="name-search"
+                      v-model="searchValue"
+                      class="align-self-center"
+                      debounce="500"
+                      placeholder="Type Player Name to Search Specific Player"
+                    />
+                  </b-col>
+                </b-row>
+              </b-card-body>
+              <b-table
+                :items="leaderboard.items"
+                :fields="leaderboard.fields"
+                class="m-0"
+              >
+                <template #cell(points_awarded)="data">
+                  {{ fmtPoints(data.value) }}
                 </template>
-                <h5>{{ winner.Player.name }}</h5>
-                <small>{{ winner.Tournament.Venue.name }}</small>
-              </b-media>
-            </b-list-group-item>
-          </b-list-group>
-        </b-col>
-      </b-row>
+              </b-table>
+            </b-card>
+          </b-col>
+          <b-col md="6">
+            <h2>Recent Tournament Winners</h2>
+            <hr />
+            <b-list-group>
+              <b-list-group-item
+                v-for="(winner, index) in winners"
+                :key="index"
+              >
+                <b-media>
+                  <template #aside>
+                    <b-img
+                      :style="
+                        'background-image: url(' +
+                        winner.Player.PlayerSetting.avatar_url +
+                        ');'
+                      "
+                      class="player-avater rounded"
+                    />
+                  </template>
+                  <h5>{{ winner.Player.name }}</h5>
+                  <small>{{ winner.Tournament.Venue.name }}</small>
+                </b-media>
+              </b-list-group-item>
+            </b-list-group>
+          </b-col>
+        </b-row>
+      </div>
     </b-container>
   </Layout>
 </template>
@@ -119,6 +133,7 @@ export default {
       season: {},
       searchValue: "",
       apiURL: apiURL,
+      loading: true,
     };
   },
   watch: {
@@ -128,26 +143,14 @@ export default {
     this.season = await this.axios
       .get(`${apiURL}/seasons/current`)
       .then((res) => res.data);
-    await Promise.all([this.fetchLeaderboard(), this.fetchRecentWinners()]);
+    await Promise.all([
+      this.fetchLeaderboard(),
+      this.fetchRecentWinners(),
+    ]).then(() => (this.loading = false));
   },
 };
 </script>
 <style scoped>
-.banner {
-  background: url("../assets/check-cards.jpg");
-  background-repeat: no-repeat;
-  background-size: cover !important;
-  height: 80vh;
-  min-height: 700px;
-  width: 100vw;
-  background-position: top center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  color: white;
-}
-
 .marginTop {
   margin-top: 150px;
 }
