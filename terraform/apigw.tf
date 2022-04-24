@@ -78,3 +78,10 @@ resource "aws_apigatewayv2_route" "get_recent_winners" {
 
   target = "integrations/${aws_apigatewayv2_integration.leaderboard_handler.id}"
 }
+
+resource "aws_apigatewayv2_route" "get_venues" {
+  api_id    = aws_apigatewayv2_api.ppc_api.id
+  route_key = "GET /venues"
+
+  target = "integrations/${aws_apigatewayv2_integration.venues_handler.id}"
+}

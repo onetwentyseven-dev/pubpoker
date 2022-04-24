@@ -32,6 +32,8 @@ data "aws_iam_policy_document" "lambda_write_cloudwatch_policy_doc" {
       "${aws_cloudwatch_log_group.players_handler.arn}:*",
       "${aws_cloudwatch_log_group.leaderboard_handler.arn}:*",
       "${aws_cloudwatch_log_group.seasons_handler.arn}:*",
+      "${aws_cloudwatch_log_group.venues_handler.arn}:*",
+      "${aws_cloudwatch_log_group.tournaments_handler.arn}:*",
     ]
   }
 }
