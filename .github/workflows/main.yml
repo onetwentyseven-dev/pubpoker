@@ -1,11 +1,11 @@
-name: Build UI
+name: Build Main UI
 on:
   push:
     branches:
       - main
     paths:
       - .github/workflows/frontend.yml
-      - frontend/**
+      - frontend/main/**
   
 permissions:
   id-token: write
