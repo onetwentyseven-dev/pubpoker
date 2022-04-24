@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <Layout>
     <b-jumbotron class="p-0">
       <div class="banner text-center">
         <h1 class="header mx-3">Charlotte's Best Free Texas Hold'em League</h1>
@@ -54,10 +54,15 @@
         </b-col>
       </b-row>
     </b-container>
-  </div>
+  </Layout>
 </template>
 <script>
+import Layout from "../layout/index.vue";
+
 export default {
+  components: {
+    Layout,
+  },
   data() {
     return {
       locations: [
@@ -124,11 +129,14 @@ export default {
       ],
     };
   },
+  created() {
+    console.log("Index");
+  },
 };
 </script>
 <style scoped>
 .banner {
-  background: url("~assets/check-cards.jpg");
+  background: url("../assets/check-cards.jpg");
   background-repeat: no-repeat;
   background-size: cover !important;
   height: 80vh;
