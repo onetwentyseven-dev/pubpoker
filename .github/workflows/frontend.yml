@@ -39,7 +39,7 @@ jobs:
       - name: Get Cloudfront Distribution
         id: get_cloudfront_id
         run: |
-          distributionID=$(aws cloudfront list-distributions | jq '.DistributionList.Items' | jq '.[] | select(.Aliases.Items[1] = "ppc.onetwentyseven.dev").Id')
-          aws cloudfront create-invalidation --distribution-id ${distributionID}
+          export CLOUDFRONT_DISTRO_ID=$(aws --profile=onetwentyseven cloudfront list-distributions --query 'DistributionList.Items[?Aliases.Items[0].DomainName=="ppc.onetwentyseven.dev"].Id | [0]' --output text)
+          aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRO_ID
 
   
