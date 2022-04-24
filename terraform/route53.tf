@@ -29,3 +29,17 @@ resource "aws_route53_record" "ppc_acm_validation_records" {
   zone_id = aws_route53_zone.ppc_zone.id
   ttl     = 60
 }
+
+
+
+resource "aws_route53_record" "ppc_main" {
+  zone_id = aws_route53_zone.ppc_zone.id
+  name    = local.base_domain
+  type    = "A"
+
+  alias {
+    zone_id                = aws_cloudfront_distribution.ppc_main.hosted_zone_id
+    name                   = aws_cloudfront_distribution.ppc_main.domain_name
+    evaluate_target_health = false
+  }
+}

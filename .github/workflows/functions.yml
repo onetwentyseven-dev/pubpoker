@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - .github/**
+      - .github/workflows/functions.yml
       - functions/**
       - internal/**
   

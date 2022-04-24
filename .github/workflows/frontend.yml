@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - .github/**
+      - .github/workflows/frontend.yml
       - frontend/**
   
 permissions:
@@ -15,24 +15,28 @@ jobs:
   BuildAndDeployUI:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v1
-      - run: cd frontend
-      - name: Setup Node
-        id: cache
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-      - name: Install Deps
-        run: cd frontend && npm ci
-      - name: Build Application
-        run: cd frontend && npm run build
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          aws-region: us-east-1
-          role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
-      - name: Sync Application with S3
-        run: aws s3 sync ./frontend/dist s3://ppc-main-site
+      # - name: Checkout Code
+      #   uses: actions/checkout@v1
+      # - run: cd frontend
+      # - name: Setup Node
+      #   id: cache
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '14'
+      #     cache: 'npm'
+      #     cache-dependency-path: frontend/package-lock.json
+      # - name: Install Deps
+      #   run: cd frontend && npm ci
+      # - name: Build Application
+      #   run: cd frontend && npm run build
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     aws-region: us-east-1
+      #     role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
+      # - name: Sync Application with S3
+      #   run: aws s3 sync ./frontend/dist s3://ppc-main-site
+      - name: Get Cloudfront Distribution
+        run: |
+          distribution=${aws cloudfront list-distributions | jq '.Distributions.Items' | jq '.[] | select(.Aliases.Items[1] = "ppc.onetwentyseven.dev")'}
+          echo "$distribution"
