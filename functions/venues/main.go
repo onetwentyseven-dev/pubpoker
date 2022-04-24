@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -26,6 +27,8 @@ func (h *handler) handleGetVenues(ctx context.Context, input events.APIGatewayV2
 			"error": "failed to fetch venues",
 		}, map[string]string{})
 	}
+
+	fmt.Println("Len of Venues", len(venues))
 
 	return apigw.RespondJSON(http.StatusOK, venues, nil)
 }
