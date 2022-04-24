@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - .github/workflows/main.yml
-      - frontend/main/**
+      - sites/main/**
   
 permissions:
   id-token: write
@@ -25,16 +25,16 @@ jobs:
           cache: 'npm'
           cache-dependency-path: sites/main/package-lock.json
       - name: Install Deps
-        run: cd frontend/main && npm ci
+        run: cd sites/main && npm ci
       - name: Build Application
-        run: cd frontend/main && npm run build
+        run: cd sites/main && npm run build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
       - name: Sync Application with S3
-        run: aws s3 sync ./frontend/main/dist s3://ppc-main-site
+        run: aws s3 sync ./sites/main/dist s3://ppc-main-site
       - name: Get Cloudfront Distribution
         id: get_cloudfront_id
         run: |
