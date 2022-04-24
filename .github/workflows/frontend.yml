@@ -39,5 +39,5 @@ jobs:
       - name: Get Cloudfront Distribution
         run: |
           # aws cloudfront list-distributions | jq '.Distributions.Items' | jq '.[] | select(.Aliases.Items[1] = "ppc.onetwentyseven.dev")'
-          aws cloudfront list-distributions 
+          aws cloudfront list-distributions | jq '.DistributionList.Items' |
   
