@@ -27,7 +27,7 @@ func (h *handler) handleGetSeasons(ctx context.Context, input events.APIGatewayV
 			"error": "failed to fetch players",
 		}, map[string]string{})
 	}
-	return apigw.RespondJSON(http.StatusOK, seasons, nil)
+	return apigw.RespondJSON(http.StatusBadRequest, seasons, nil)
 
 }
 
