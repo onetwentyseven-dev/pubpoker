@@ -39,7 +39,7 @@ jobs:
       - name: Get Cloudfront Distribution
         id: get_cloudfront_id
         run: |
-          distributions=$(aws cloudfront list-distributions | jq '.DistributionList.Items' | jq '.[] | select(.Aliases.Items[1] = "ppc.onetwentyseven.dev")')
+          distribution=$(aws cloudfront list-distributions | jq '.DistributionList.Items' | jq '.[] | select(.Aliases.Items[1] = "ppc.onetwentyseven.dev")')
           echo "::set-output name=distribution::$(distribution)"
       - name: Output Distribution ID
         run: echo $distribution | jq .Id
