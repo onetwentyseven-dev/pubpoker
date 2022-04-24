@@ -3,7 +3,10 @@ on:
   push:
     branches:
       - main
-
+    paths:
+      - .github/**
+      - frontend/**
+  
 permissions:
   id-token: write
   contents: read
