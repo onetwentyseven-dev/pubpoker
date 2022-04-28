@@ -66,6 +66,6 @@ func main() {
 		}: h.handleGetVenues,
 	}
 
-	lambda.Start(apigw.HandleRoutes(routes))
+	lambda.Start(apigw.UseMiddleware(apigw.HandleRoutes(routes), apigw.Cors(apigw.DefaultCorsOpt)))
 
 }

@@ -18,6 +18,15 @@ data "aws_iam_policy_document" "lambda_execution_role_policy_doc" {
 #   name = "lambda_cloudwatch_access"
 # }
 
+resource "aws_iam_role_policy_attachment" "lambda" {
+  role       = aws_iam_role.lambda_execution_role.id
+  policy_arn = local.lambda_vpc_access_policy
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_iam_role_policy" "lambda_cloudwatch_access" {
   name   = "lambda_cloudwatch_access_policy"
   role   = aws_iam_role.lambda_execution_role.id

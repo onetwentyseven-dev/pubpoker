@@ -46,6 +46,6 @@ func main() {
 
 	var routes = map[apigw.Route]apigw.Handler{}
 
-	lambda.Start(apigw.HandleRoutes(routes))
+	lambda.Start(apigw.UseMiddleware(apigw.HandleRoutes(routes), apigw.Cors(apigw.DefaultCorsOpt)))
 
 }

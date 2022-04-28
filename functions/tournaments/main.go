@@ -2,24 +2,50 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/gofrs/uuid"
+	"github.com/jmoiron/sqlx"
 	"github.com/onetwentyseven-dev/pubpoker/internal/apigw"
+	"github.com/onetwentyseven-dev/pubpoker/internal/db"
 	"github.com/onetwentyseven-dev/pubpoker/internal/leaderboard"
-
+	"github.com/onetwentyseven-dev/pubpoker/internal/tournaments"
 	"github.com/sirupsen/logrus"
+)
+
+var (
+	dbConn *sqlx.DB
 )
 
 type handler struct {
 	logger      *logrus.Logger
 	leaderboard *leaderboard.Client
+	tournament  tournaments.API
 }
 
-func (h *handler) handleGetTournament(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+type handlePostTournamentRequestBody struct {
+	VenueID uuid.UUID `json:"venueID"`
+}
+
+// func (h *handler) handleGetTournament(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+// 	return events.APIGatewayV2HTTPResponse{}, nil
+// }
+
+func (h *handler) handlePostTournament(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+
+	var body = new(handlePostTournamentRequestBody)
+	err := json.Unmarshal([]byte(input.Body), body)
+	if err != nil {
+		return apigw.RespondJSONError(http.StatusBadRequest, "failed to decode request", nil, nil)
+	}
+
+	// tournament, err := h.
+
 	return events.APIGatewayV2HTTPResponse{}, nil
 }
 
@@ -34,6 +60,7 @@ func main() {
 	}
 
 	loadConfig(awsConf)
+	loadMySQL()
 
 	lbc := leaderboard.New(&http.Client{
 		Timeout: time.Second * 5,
@@ -44,9 +71,13 @@ func main() {
 		LeagueID: ssmConfig.LeagueID,
 	})
 
-	_ = &handler{
+	tournamentRepo := db.NewTournamentRepository(dbConn)
+	tournamentService := tournaments.NewTournamentService(lbc, tournamentRepo)
+
+	h := &handler{
 		logger:      logger,
 		leaderboard: lbc,
+		tournament:  tournamentService,
 	}
 
 	var routes = map[apigw.Route]apigw.Handler{
@@ -59,11 +90,17 @@ func main() {
 			Path:   "/tournaments/{tournamentID}/players",
 		}: nil,
 		{
-			Method: http.MethodGet,
+			Method: http.MethodPost,
 			Path:   "/tournaments",
-		}: nil,
+		}: h.handlePostTournament,
 	}
 
-	lambda.Start(apigw.HandleRoutes(routes))
+	lambda.Start(
+		apigw.UseMiddleware(
+			apigw.HandleRoutes(routes),
+			apigw.Cors(apigw.DefaultCorsOpt),
+			apigw.ContentType("application/json"),
+		),
+	)
 
 }

@@ -85,3 +85,10 @@ resource "aws_apigatewayv2_route" "get_venues" {
 
   target = "integrations/${aws_apigatewayv2_integration.venues_handler.id}"
 }
+
+resource "aws_apigatewayv2_route" "post_tournaments" {
+  api_id    = aws_apigatewayv2_api.ppc_api.id
+  route_key = "POST /tournaments"
+
+  target = "integrations/${aws_apigatewayv2_integration.tournaments_handler.id}"
+}

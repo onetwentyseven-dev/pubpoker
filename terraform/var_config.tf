@@ -1,3 +1,3 @@
 variable "enable_bastion" {
-  default = false
+  default = true
 }

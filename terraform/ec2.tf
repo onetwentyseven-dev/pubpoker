@@ -5,13 +5,13 @@ locals {
 resource "aws_network_interface" "ssh_ni" {
   subnet_id = aws_subnet.public1a.id
   security_groups = [
-    aws_security_group.allow_ssh_from_home.id
+    aws_security_group.allow_external_ssh.id
   ]
 
 }
 
 data "aws_key_pair" "default" {
-  key_name = "ddouglas-20220409"
+  key_name = "ddouglas-mac-22020424-2"
 }
 
 
@@ -29,9 +29,9 @@ resource "aws_instance" "ssh_tunnel" {
 
 }
 
-resource "aws_security_group" "allow_ssh_from_home" {
-  name        = "allow_ssh_from_home"
-  description = "Allows SSH From Home (Created With Terraform)"
+resource "aws_security_group" "allow_external_ssh" {
+  name        = "AllowExternalSSH"
+  description = "Allow SSH Connection from External Sources"
   vpc_id      = aws_vpc.poker.id
 
   ingress {
@@ -39,9 +39,44 @@ resource "aws_security_group" "allow_ssh_from_home" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["208.104.177.231/32"]
+    cidr_blocks = ["208.104.177.231/32", "66.191.182.17/32"]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_lambda_egress" {
+  name        = "AllowLambdaEgress"
+  description = "Allows Lambda's to Egress to anywhere on any port"
+  vpc_id      = aws_vpc.poker.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_rds_connections" {
+  name        = "AllowRDSConnections"
+  description = "AllowRDSConnections"
+  vpc_id      = aws_vpc.poker.id
+
+  ingress {
+    description = "MySQL TCP"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.allow_lambda_egress.id,
+    ]
+  }
   egress {
     from_port   = 0
     to_port     = 0

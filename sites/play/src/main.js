@@ -2,6 +2,8 @@ import Vue from 'vue';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
+
 
 import App from './App.vue';
 import router from './router';
@@ -14,6 +16,9 @@ import 'bootswatch/dist/cosmo/bootstrap.min.css';
 Vue.use(BootstrapVue);
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin);
+
+// Global registration
+Vue.component('vue-bootstrap-typeahead', VueBootstrapTypeahead)
 
 Vue.config.productionTip = false;
 

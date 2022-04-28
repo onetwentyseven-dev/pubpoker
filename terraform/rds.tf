@@ -43,18 +43,3 @@ resource "aws_db_subnet_group" "poker" {
   subnet_ids = [aws_subnet.db1b.id, aws_subnet.db1d.id]
 }
 
-resource "aws_security_group" "allow_rds_connections" {
-  name        = "allow_mysql_from_ec2"
-  description = "Allows EC2 to connect to Aurora MySQL"
-  vpc_id      = aws_vpc.poker.id
-
-  ingress {
-    description = "MySQL TCP from EC2"
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    security_groups = [
-      aws_security_group.allow_ssh_from_home.id
-    ]
-  }
-}

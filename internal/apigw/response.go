@@ -57,6 +57,7 @@ func RespondJSONError(status int, msg string, headers map[string]string, err err
 	if err != nil {
 		fmt.Println("RespondJSONError :: ", err)
 	}
+
 	s := map[string]string{"error": msg}
 
 	return RespondJSON(status, s, headers)
