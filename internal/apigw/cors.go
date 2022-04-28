@@ -36,6 +36,10 @@ func Cors(opts *CorsOpts) Middleware {
 				return results, err
 			}
 
+			if results.Headers == nil {
+				results.Headers = make(map[string]string)
+			}
+
 			for h, v := range hders {
 				results.Headers[h] = v
 			}

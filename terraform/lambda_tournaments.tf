@@ -4,11 +4,9 @@ resource "aws_lambda_function" "tournaments_handler" {
   handler       = "tournaments"
   s3_bucket     = aws_s3_bucket.ppc_lambda_functions.bucket
   s3_key        = "tournaments_handler.zip"
+  timeout       = 15
   vpc_config {
-    subnet_ids = [
-      aws_subnet.public1a.id,
-      aws_subnet.public1c.id,
-    ]
+    subnet_ids = aws_subnet.app.*.id
     security_group_ids = [
       aws_security_group.allow_lambda_egress.id
     ]

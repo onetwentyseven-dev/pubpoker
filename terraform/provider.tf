@@ -1,6 +1,6 @@
 provider "aws" {
   region  = "us-east-1"
-  profile = "onetwentyseven"
+  profile = "ots"
   default_tags {
     tags = {
       Project = "Pub Poker Championship"
@@ -20,7 +20,7 @@ terraform {
     region         = "us-east-1"
     key            = "terraform.tfstate"
     dynamodb_table = "ppc-terraform-state"
-    profile        = "onetwentyseven"
+    profile        = "ots"
   }
   required_providers {
     aws = {

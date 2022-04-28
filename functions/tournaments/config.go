@@ -1,13 +1,11 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
-	ssmconfig "github.com/onetwentyseven-dev/go-ssm-config"
 )
 
 var envConfig struct {
@@ -33,8 +31,8 @@ func loadConfig(awsConfig aws.Config) {
 		panic(fmt.Sprintf("envconfig: %s", err))
 	}
 
-	err = ssmconfig.Process(context.TODO(), awsConfig, envConfig.SSMPrefix, &ssmConfig)
-	if err != nil {
-		panic(fmt.Sprintf("ssmconfig: %s", err))
-	}
+	// err = ssmconfig.Process(context.TODO(), awsConfig, envConfig.SSMPrefix, &ssmConfig)
+	// if err != nil {
+	// 	panic(fmt.Sprintf("ssmconfig: %s", err))
+	// }
 }
