@@ -26,6 +26,7 @@ func (h *handler) handleGetSearchPlayers(ctx context.Context, input events.APIGa
 			"error": "failed to fetch players",
 		}, map[string]string{})
 	}
+
 	return apigw.RespondJSON(http.StatusOK, players, nil)
 
 }

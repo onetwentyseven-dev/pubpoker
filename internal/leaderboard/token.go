@@ -22,7 +22,7 @@ const (
 	tokenCacheKey = "token"
 )
 
-func (c *Client) GetToken(ctx context.Context) (*Token, error) {
+func (c *Client) getToken(ctx context.Context) (*Token, error) {
 
 	cacheData := c.cache.Get(tokenCacheKey)
 	if cacheData != nil {

@@ -1,7 +1,9 @@
 <template>
   <div>
     <Navbar />
-    <slot></slot>
+    <div style="margin-bottom: 15vh">
+      <slot></slot>
+    </div>
     <div class="footer">
       <b-container>
         <b-row>
@@ -32,19 +34,20 @@ export default {
       return new Date().getFullYear();
     },
   },
-  created() {
-    console.log("Layout");
-  },
 };
 </script>
 
 <style scoped>
 .footer {
   min-height: 10vh;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #666;
-  color: white;
+  background-color: #999;
+  /* color: white; */
+  left: 0;
+  bottom: 0;
+  width: 100%;
 }
 </style>

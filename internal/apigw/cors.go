@@ -14,8 +14,8 @@ type CorsOpts struct {
 }
 
 var DefaultCorsOpt = &CorsOpts{
-	Methods: []string{"GET", "OPTIONS"},
-	Headers: []string{"*"},
+	Methods: []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
+	Headers: []string{"Accept", "Content-Type", "User-Agent"},
 	Origins: []string{"*"},
 }
 

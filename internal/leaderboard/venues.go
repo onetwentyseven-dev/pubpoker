@@ -21,7 +21,7 @@ type GetVenueByIDResponse struct {
 
 func (c *Client) Venues(ctx context.Context) ([]*Venue, error) {
 
-	token, err := c.GetToken(ctx)
+	token, err := c.getToken(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to fetch token to get venues")
 	}
@@ -68,7 +68,7 @@ func (c *Client) Venues(ctx context.Context) ([]*Venue, error) {
 
 func (c *Client) Venue(ctx context.Context, venueID uuid.UUID) (*Venue, error) {
 
-	token, err := c.GetToken(ctx)
+	token, err := c.getToken(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to fetch token to get venue by id")
 	}

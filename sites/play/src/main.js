@@ -10,7 +10,7 @@ import router from './router';
 import store from './store';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import 'bootswatch/dist/cosmo/bootstrap.min.css';
+// import 'bootswatch/dist/cosmo/bootstrap.min.css';
 
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue);

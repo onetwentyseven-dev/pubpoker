@@ -2,9 +2,9 @@ package apigw
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/sirupsen/logrus"
 )
 
 // Respond is a simple response with a status and body
@@ -55,7 +55,9 @@ func RespondJSON(status int, body interface{}, headers map[string]string) (event
 // RespondJSONError returns a json-formatted error response
 func RespondJSONError(status int, msg string, headers map[string]string, err error) (events.APIGatewayV2HTTPResponse, error) {
 	if err != nil {
-		fmt.Println("RespondJSONError :: ", err)
+		logger.WithError(err).WithFields(logrus.Fields{
+			"status": status,
+		}).Error(msg)
 	}
 
 	s := map[string]string{"error": msg}

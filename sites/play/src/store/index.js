@@ -19,7 +19,6 @@ export default new Vuex.Store({
   },
   actions: {
     setAtTop({ commit }, status) {
-      console.log("setAtTop", status)
       commit("storeAtTop", status)
     }
   },

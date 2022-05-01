@@ -30,8 +30,6 @@ resource "aws_route53_record" "ppc_acm_validation_records" {
   ttl     = 60
 }
 
-
-
 resource "aws_route53_record" "ppc_main" {
   zone_id = aws_route53_zone.ppc_zone.id
   name    = local.base_domain
@@ -42,4 +40,15 @@ resource "aws_route53_record" "ppc_main" {
     name                   = aws_cloudfront_distribution.ppc_main.domain_name
     evaluate_target_health = false
   }
+}
+
+resource "aws_route53_record" "bastion_ppc" {
+  count   = var.enable_bastion ? 1 : 0
+  zone_id = aws_route53_zone.ppc_zone.id
+  name    = "bastion.${local.base_domain}"
+  type    = "A"
+  ttl     = "60"
+  records = [
+    aws_instance.ssh_tunnel[0].public_ip
+  ]
 }

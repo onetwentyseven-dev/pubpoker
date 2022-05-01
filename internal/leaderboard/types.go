@@ -35,6 +35,10 @@ type GetPlayersResponse struct {
 	Pagination *ResponsePagination `json:"pagination"`
 }
 
+type GetPlayerResponse struct {
+	Player *Player `json:"player"`
+}
+
 type ResponsePagination struct {
 	Page      int `json:"page"`
 	PageSize  int `json:"pageSize"`

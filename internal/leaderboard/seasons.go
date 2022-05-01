@@ -38,7 +38,7 @@ func (s *Client) CurrentSeason(ctx context.Context, seasons []*Season) (*Season,
 }
 
 func (c *Client) Seasons(ctx context.Context) ([]*Season, error) {
-	token, err := c.GetToken(ctx)
+	token, err := c.getToken(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to fetch token for search players request")
 	}

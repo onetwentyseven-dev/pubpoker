@@ -11,7 +11,6 @@ variable "vpc_cidr" {
   default = "10.0.0.0/24"
 }
 
-
 variable "az_count" {
   default = 2
 }
