@@ -1,5 +1,5 @@
 variable "enable_bastion" {
-  default = true
+  default = false
 }
 
 variable "azs" {
