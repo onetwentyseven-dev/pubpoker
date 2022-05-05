@@ -1,0 +1,44 @@
+name: Build Main UI
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/play.yml
+      - sites/play/**
+  
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  BuildAndDeployUI:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v1
+      - name: Setup Node
+        id: cache
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+          cache: 'npm'
+          cache-dependency-path: sites/play/package-lock.json
+      - name: Install Deps
+        run: cd sites/play && npm ci
+      - name: Build Application
+        run: cd sites/play && npm run build
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::847870459364:role/GithubActionOIDC
+      - name: Sync Application with S3
+        run: aws s3 sync ./sites/play/dist s3://ppc-play-site
+      - name: Get Cloudfront Distribution
+        id: get_cloudfront_id
+        run: |
+          export CLOUDFRONT_DISTRO_ID=$(aws cloudfront list-distributions --query 'DistributionList.Items[?Aliases.Items[0].DomainName=="play.ppc.onetwentyseven.dev"].Id | [0]' --output text)
+          aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRO_ID --paths '/*'
+
+  

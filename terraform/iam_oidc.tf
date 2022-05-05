@@ -43,7 +43,9 @@ data "aws_iam_policy_document" "github_actions_odic" {
     ]
     resources = [
       aws_s3_bucket.ppc_main_site.arn,
+      aws_s3_bucket.ppc_play_site.arn,
       "${aws_s3_bucket.ppc_main_site.arn}/*",
+      "${aws_s3_bucket.ppc_play_site.arn}/*",
       "${aws_s3_bucket.ppc_lambda_functions.arn}/*",
       aws_s3_bucket.ppc_lambda_functions.arn,
     ]
@@ -53,7 +55,11 @@ data "aws_iam_policy_document" "github_actions_odic" {
     actions = [
       "cloudfront:CreateInvalidation",
     ]
-    resources = [aws_cloudfront_distribution.ppc_main.arn]
+    resources = [
+      aws_cloudfront_distribution.ppc_main.arn,
+      aws_cloudfront_distribution.ppc_play.arn,
+
+    ]
   }
   statement {
     effect    = "Allow"
@@ -67,6 +73,7 @@ data "aws_iam_policy_document" "github_actions_odic" {
     ]
     resources = [
       aws_lambda_function.leaderboard_handler.arn,
+      aws_lambda_function.tournaments_handler.arn,
       aws_lambda_function.players_handler.arn,
       aws_lambda_function.seasons_handler.arn,
     ]

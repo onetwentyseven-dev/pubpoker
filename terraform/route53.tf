@@ -42,6 +42,19 @@ resource "aws_route53_record" "ppc_main" {
   }
 }
 
+resource "aws_route53_record" "ppc_play" {
+  zone_id = aws_route53_zone.ppc_zone.id
+  name    = "play.${local.base_domain}"
+  type    = "A"
+
+  alias {
+    zone_id                = aws_cloudfront_distribution.ppc_play.hosted_zone_id
+    name                   = aws_cloudfront_distribution.ppc_play.domain_name
+    evaluate_target_health = false
+  }
+}
+
+
 resource "aws_route53_record" "bastion_ppc" {
   count   = var.enable_bastion ? 1 : 0
   zone_id = aws_route53_zone.ppc_zone.id
