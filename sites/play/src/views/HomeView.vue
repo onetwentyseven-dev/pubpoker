@@ -56,8 +56,11 @@
                 :key="tournament.id"
                 :href="`/tournaments/${tournament.id}`"
               >
-                {{ fmtTime(tournament.createdAtDate) }}
-                {{ fmtVenue(tournament.venueID) }}
+                {{
+                  fmtTime(tournament.createdAtDate) +
+                  " - " +
+                  fmtVenue(tournament.venueID)
+                }}
               </b-list-group-item>
             </b-list-group>
           </b-card>

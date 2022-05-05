@@ -1,4 +1,4 @@
-name: Build Main UI
+name: Build Play UI
 on:
   push:
     branches:
