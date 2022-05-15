@@ -14,10 +14,6 @@ data "aws_iam_policy_document" "lambda_execution_role_policy_doc" {
   }
 }
 
-# resource "aws_iam_role" "lambda_cloudwatch_access" {
-#   name = "lambda_cloudwatch_access"
-# }
-
 resource "aws_iam_role_policy_attachment" "lambda" {
   role       = aws_iam_role.lambda_execution_role.id
   policy_arn = local.lambda_vpc_access_policy
@@ -39,10 +35,10 @@ data "aws_iam_policy_document" "lambda_write_cloudwatch_policy_doc" {
     actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
     resources = [
       "${aws_cloudwatch_log_group.players_handler.arn}:*",
-      "${aws_cloudwatch_log_group.leaderboard_handler.arn}:*",
       "${aws_cloudwatch_log_group.seasons_handler.arn}:*",
-      "${aws_cloudwatch_log_group.venues_handler.arn}:*",
       "${aws_cloudwatch_log_group.tournaments_handler.arn}:*",
+      "${aws_cloudwatch_log_group.venues_handler.arn}:*",
+      "${aws_cloudwatch_log_group.winners_handler.arn}:*",
     ]
   }
 }

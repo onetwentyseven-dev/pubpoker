@@ -1,16 +1,16 @@
-resource "aws_s3_bucket" "ppc_main_site" {
+resource "aws_s3_bucket" "main" {
   bucket = "ppc-main-site"
 }
 
-resource "aws_s3_bucket" "ppc_play_site" {
+resource "aws_s3_bucket" "play" {
   bucket = "ppc-play-site"
 }
 
-data "aws_iam_policy_document" "ppc_main_assets" {
+data "aws_iam_policy_document" "main_assets" {
   statement {
     actions = ["s3:GetObject"]
     resources = [
-      "${aws_s3_bucket.ppc_main_site.arn}/*",
+      format("%s/*", aws_s3_bucket.main.arn)
     ]
 
     principals {
@@ -22,17 +22,17 @@ data "aws_iam_policy_document" "ppc_main_assets" {
   }
 }
 
-resource "aws_s3_bucket_policy" "ppc_main_site" {
-  bucket = aws_s3_bucket.ppc_main_site.id
-  policy = data.aws_iam_policy_document.ppc_main_assets.json
+resource "aws_s3_bucket_policy" "main" {
+  bucket = aws_s3_bucket.main.id
+  policy = data.aws_iam_policy_document.main_assets.json
 }
 
 
-data "aws_iam_policy_document" "ppc_play_assets" {
+data "aws_iam_policy_document" "play_assets" {
   statement {
     actions = ["s3:GetObject"]
     resources = [
-      "${aws_s3_bucket.ppc_play_site.arn}/*",
+      format("%s/*", aws_s3_bucket.play.arn)
     ]
 
     principals {
@@ -44,13 +44,13 @@ data "aws_iam_policy_document" "ppc_play_assets" {
   }
 }
 
-resource "aws_s3_bucket_policy" "ppc_play_site" {
-  bucket = aws_s3_bucket.ppc_play_site.id
-  policy = data.aws_iam_policy_document.ppc_play_assets.json
+resource "aws_s3_bucket_policy" "play" {
+  bucket = aws_s3_bucket.play.id
+  policy = data.aws_iam_policy_document.play_assets.json
 }
 
 
-resource "aws_s3_bucket" "ppc_lambda_functions" {
+resource "aws_s3_bucket" "lambda_functions" {
   bucket = "ppc-lambda-functions"
 }
 

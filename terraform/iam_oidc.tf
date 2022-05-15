@@ -42,25 +42,25 @@ data "aws_iam_policy_document" "github_actions_odic" {
       "s3:List*"
     ]
     resources = [
-      aws_s3_bucket.ppc_main_site.arn,
-      aws_s3_bucket.ppc_play_site.arn,
-      "${aws_s3_bucket.ppc_main_site.arn}/*",
-      "${aws_s3_bucket.ppc_play_site.arn}/*",
-      "${aws_s3_bucket.ppc_lambda_functions.arn}/*",
-      aws_s3_bucket.ppc_lambda_functions.arn,
+      aws_s3_bucket.main.arn,
+      aws_s3_bucket.play.arn,
+      "${aws_s3_bucket.main.arn}/*",
+      "${aws_s3_bucket.play.arn}/*",
+      "${aws_s3_bucket.lambda_functions.arn}/*",
+      aws_s3_bucket.lambda_functions.arn,
     ]
   }
-  statement {
-    effect = "Allow"
-    actions = [
-      "cloudfront:CreateInvalidation",
-    ]
-    resources = [
-      aws_cloudfront_distribution.ppc_main.arn,
-      aws_cloudfront_distribution.ppc_play.arn,
+  # statement {
+  #   effect = "Allow"
+  #   actions = [
+  #     "cloudfront:CreateInvalidation",
+  #   ]
+  #   resources = [
+  #     aws_cloudfront_distribution.home.arn,
+  #     aws_cloudfront_distribution.play.arn,
 
-    ]
-  }
+  #   ]
+  # }
   statement {
     effect    = "Allow"
     actions   = ["cloudfront:ListDistributions"]
@@ -72,10 +72,10 @@ data "aws_iam_policy_document" "github_actions_odic" {
       "lambda:UpdateFunctionCode"
     ]
     resources = [
-      aws_lambda_function.leaderboard_handler.arn,
       aws_lambda_function.tournaments_handler.arn,
       aws_lambda_function.players_handler.arn,
       aws_lambda_function.seasons_handler.arn,
+      aws_lambda_function.winners_handler.arn,
     ]
   }
 }

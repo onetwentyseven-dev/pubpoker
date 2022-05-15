@@ -2,14 +2,17 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/onetwentyseven-dev/pubpoker/internal/apigw"
+	"github.com/gofrs/uuid"
+	"github.com/onetwentyseven-dev/pubpoker/internal/apigw/rest"
 	"github.com/onetwentyseven-dev/pubpoker/internal/leaderboard"
+	"github.com/pkg/errors"
 
 	"github.com/sirupsen/logrus"
 )
@@ -19,15 +22,32 @@ type handler struct {
 	leaderboard *leaderboard.Client
 }
 
+func (h *handler) handleGetLeaderboard(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+
+	seasonID, err := uuid.FromString(input.PathParameters["seasonID"])
+	if err != nil {
+		return rest.RespondJSONError(http.StatusBadRequest, "failed to parse seasonID to valid uuid", nil, err)
+	}
+
+	rows, err := h.leaderboard.SeasonLeaderboard(ctx, 1, 25, seasonID.String(), input.QueryStringParameters["search"])
+	if err != nil {
+		fmt.Println(err)
+		return rest.RespondJSONError(http.StatusBadRequest, errors.Wrap(err, "failed to fetch season leaderboard").Error(), nil, err)
+	}
+
+	return rest.RespondJSON(http.StatusOK, rows, map[string]string{})
+
+}
+
 func (h *handler) handleGetSeasons(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 
 	seasons, err := h.leaderboard.Seasons(ctx)
 	if err != nil {
-		return apigw.RespondJSON(http.StatusBadRequest, map[string]string{
+		return rest.RespondJSON(http.StatusBadRequest, map[string]string{
 			"error": "failed to fetch seasons",
 		}, map[string]string{})
 	}
-	return apigw.RespondJSON(http.StatusOK, seasons, nil)
+	return rest.RespondJSON(http.StatusOK, seasons, nil)
 
 }
 
@@ -35,19 +55,19 @@ func (h *handler) handleGetCurrentSeason(ctx context.Context, input events.APIGa
 
 	seasons, err := h.leaderboard.Seasons(ctx)
 	if err != nil {
-		return apigw.RespondJSON(http.StatusBadRequest, map[string]string{
+		return rest.RespondJSON(http.StatusBadRequest, map[string]string{
 			"error": "failed to fetch seasons",
 		}, map[string]string{})
 	}
 
 	season, err := h.leaderboard.CurrentSeason(ctx, seasons)
 	if err != nil {
-		return apigw.RespondJSON(http.StatusBadRequest, map[string]string{
+		return rest.RespondJSON(http.StatusBadRequest, map[string]string{
 			"error": "failed to fetch current season",
 		}, map[string]string{})
 	}
 
-	return apigw.RespondJSON(http.StatusOK, season, nil)
+	return rest.RespondJSON(http.StatusOK, season, nil)
 
 }
 
@@ -77,7 +97,7 @@ func main() {
 		leaderboard: lbc,
 	}
 
-	var routes = map[apigw.Route]apigw.Handler{
+	var routes = map[rest.Route]rest.Handler{
 		{
 			Method: http.MethodGet,
 			Path:   "/seasons",
@@ -86,8 +106,12 @@ func main() {
 			Method: http.MethodGet,
 			Path:   "/seasons/current",
 		}: h.handleGetCurrentSeason,
+		{
+			Method: http.MethodGet,
+			Path:   "/seasons/{seasonID}/leaderboard",
+		}: h.handleGetLeaderboard,
 	}
 
-	lambda.Start(apigw.UseMiddleware(apigw.HandleRoutes(routes), apigw.Cors(apigw.DefaultCorsOpt)))
+	lambda.Start(rest.UseMiddleware(rest.HandleRoutes(routes), rest.Cors(rest.DefaultCorsOpt)))
 
 }

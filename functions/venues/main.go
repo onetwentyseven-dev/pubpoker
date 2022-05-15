@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/onetwentyseven-dev/pubpoker/internal/apigw"
+	"github.com/onetwentyseven-dev/pubpoker/internal/apigw/rest"
 	"github.com/onetwentyseven-dev/pubpoker/internal/leaderboard"
 
 	"github.com/sirupsen/logrus"
@@ -23,15 +22,24 @@ type handler struct {
 func (h *handler) handleGetVenues(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	venues, err := h.leaderboard.Venues(ctx)
 	if err != nil {
-		return apigw.RespondJSON(http.StatusBadRequest, map[string]string{
+		return rest.RespondJSON(http.StatusBadRequest, map[string]string{
 			"error": "failed to fetch venues",
 		}, map[string]string{})
 	}
 
-	fmt.Println("Len of Venues", len(venues))
-
-	return apigw.RespondJSON(http.StatusOK, venues, nil)
+	return rest.RespondJSON(http.StatusOK, venues, nil)
 }
+
+// func (h *handler) handleGetVenues(ctx context.Context, input events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+
+// 	fmt.Printf("%T\n", input)
+// 	inputData, _ := json.Marshal(input)
+// 	fmt.Println("input :: ", string(inputData))
+// 	return events.APIGatewayV2HTTPResponse{
+// 		StatusCode: http.StatusOK,
+// 	}, nil
+
+// }
 
 func main() {
 
@@ -59,13 +67,12 @@ func main() {
 		leaderboard: lbc,
 	}
 
-	var routes = map[apigw.Route]apigw.Handler{
+	var routes = map[rest.Route]rest.Handler{
 		{
 			Method: http.MethodGet,
 			Path:   "/venues",
 		}: h.handleGetVenues,
 	}
 
-	lambda.Start(apigw.UseMiddleware(apigw.HandleRoutes(routes), apigw.Cors(apigw.DefaultCorsOpt)))
-
+	lambda.Start(rest.UseMiddleware(rest.HandleRoutes(routes), rest.Cors(rest.DefaultCorsOpt)))
 }

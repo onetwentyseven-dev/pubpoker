@@ -11,14 +11,14 @@ resource "aws_cloudwatch_log_group" "seasons_handler" {
   name = "/aws/lambda/${aws_lambda_function.seasons_handler.function_name}"
 }
 
-resource "aws_cloudwatch_log_group" "leaderboard_handler" {
-  name = "/aws/lambda/${aws_lambda_function.leaderboard_handler.function_name}"
-}
-
 resource "aws_cloudwatch_log_group" "tournaments_handler" {
   name = "/aws/lambda/${aws_lambda_function.tournaments_handler.function_name}"
 }
 
 resource "aws_cloudwatch_log_group" "venues_handler" {
   name = "/aws/lambda/${aws_lambda_function.venues_handler.function_name}"
+}
+
+resource "aws_cloudwatch_log_group" "winners_handler" {
+  name = "/aws/lambda/${aws_lambda_function.winners_handler.function_name}"
 }

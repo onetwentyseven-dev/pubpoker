@@ -262,10 +262,6 @@ func main() {
 		}: h.handlePatchTournamentPlayer,
 		{
 			Method: http.MethodGet,
-			Path:   "/tournaments/{tournamentID}",
-		}: h.handleGetTournament,
-		{
-			Method: http.MethodGet,
 			Path:   "/tournaments/{tournamentID}/players",
 		}: h.handleGetTournamentPlayers,
 		{
